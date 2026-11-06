@@ -8,7 +8,7 @@ require 'deep_merge'
 # The purpose of this module is to simplify the Puppet
 # module's RSpec tests by looping through all supported
 # OS'es and their facts data which is received from the FacterDB.
-module RspecPuppetFacts
+module RspecPuppetlabsFacts
   FACTS_CACHE = {}
 
   # Use the provided options or the data from the metadata.json file
@@ -33,15 +33,15 @@ module RspecPuppetFacts
   def on_supported_os(opts = {})
     opts[:hardwaremodels] ||= ['x86_64']
     opts[:hardwaremodels] = [opts[:hardwaremodels]] unless opts[:hardwaremodels].is_a? Array
-    opts[:supported_os] ||= RspecPuppetFacts.meta_supported_os
+    opts[:supported_os] ||= RspecPuppetlabsFacts.meta_supported_os
     opts[:facterversion] ||= RSpec.configuration.default_facter_version
 
     # This should list all variables that on_supported_os_implementation uses
     cache_key = [
       opts.to_s,
-      RspecPuppetFacts.custom_facts.to_s,
-      RspecPuppetFacts.spec_facts_os_filter,
-      RspecPuppetFacts.spec_facts_strict?,
+      RspecPuppetlabsFacts.custom_facts.to_s,
+      RspecPuppetlabsFacts.spec_facts_os_filter,
+      RspecPuppetlabsFacts.spec_facts_strict?,
     ]
 
     result = FACTS_CACHE[cache_key] ||= on_supported_os_implementation(opts)
@@ -109,9 +109,9 @@ module RspecPuppetFacts
       end
     end
 
-    strict_requirement = RspecPuppetFacts.facter_version_to_strict_requirement(facterversion)
+    strict_requirement = RspecPuppetlabsFacts.facter_version_to_strict_requirement(facterversion)
 
-    loose_requirement = RspecPuppetFacts.facter_version_to_loose_requirement(facterversion)
+    loose_requirement = RspecPuppetlabsFacts.facter_version_to_loose_requirement(facterversion)
     received_facts = []
 
     # FacterDB may have newer versions of facter data for which it contains a subset of all possible
@@ -129,16 +129,16 @@ module RspecPuppetFacts
         version, facts = versions.select { |v, _f| loose_requirement =~ v }.max_by { |v, _f| v } if loose_requirement
         next unless version
 
-        raise ArgumentError, "No facts were found in the FacterDB for Facter v#{facterversion} on #{filter_spec}, aborting" if RspecPuppetFacts.spec_facts_strict?
+        raise ArgumentError, "No facts were found in the FacterDB for Facter v#{facterversion} on #{filter_spec}, aborting" if RspecPuppetlabsFacts.spec_facts_strict?
 
-        RspecPuppetFacts.warning "No facts were found in the FacterDB for Facter v#{facterversion} on #{filter_spec}, using v#{version} instead"
+        RspecPuppetlabsFacts.warning "No facts were found in the FacterDB for Facter v#{facterversion} on #{filter_spec}, using v#{version} instead"
       end
 
       received_facts << facts
     end
 
     unless received_facts.any?
-      RspecPuppetFacts.warning "No facts were found in the FacterDB for: #{filter.inspect}"
+      RspecPuppetlabsFacts.warning "No facts were found in the FacterDB for: #{filter.inspect}"
       return {}
     end
 
@@ -146,15 +146,15 @@ module RspecPuppetFacts
     received_facts.map do |facts|
       os_fact = RSpec.configuration.facterdb_string_keys ? facts['os'] : facts[:os]
       unless os_fact
-        RspecPuppetFacts.warning "No os fact was found in FacterDB for: #{facts}"
+        RspecPuppetlabsFacts.warning "No os fact was found in FacterDB for: #{facts}"
         next
       end
 
       os = "#{os_fact['name'].downcase}-#{os_fact['release']['major']}-#{os_fact['hardware']}"
-      next if RspecPuppetFacts.spec_facts_os_filter && !os.start_with?(RspecPuppetFacts.spec_facts_os_filter)
+      next if RspecPuppetlabsFacts.spec_facts_os_filter && !os.start_with?(RspecPuppetlabsFacts.spec_facts_os_filter)
 
-      facts.merge! RspecPuppetFacts.common_facts
-      os_facts_hash[os] = RspecPuppetFacts.with_custom_facts(os, facts)
+      facts.merge! RspecPuppetlabsFacts.common_facts
+      os_facts_hash[os] = RspecPuppetlabsFacts.with_custom_facts(os, facts)
     end
 
     os_facts_hash
@@ -180,7 +180,7 @@ module RspecPuppetFacts
     options[:confine] = [options[:confine]] if options[:confine].is_a?(String)
     options[:exclude] = [options[:exclude]] if options[:exclude].is_a?(String)
 
-    RspecPuppetFacts.register_custom_fact(name, value, options)
+    RspecPuppetlabsFacts.register_custom_fact(name, value, options)
   end
 
   # Adds a custom fact to the @custom_facts variable.
@@ -239,7 +239,7 @@ module RspecPuppetFacts
     ENV.fetch('SPEC_FACTS_OS', nil)
   end
 
-  # If SPEC_FACTS_STRICT is set to `yes`, RspecPuppetFacts will error on missing FacterDB entries, instead of warning & skipping the tests, or using an older facter version.
+  # If SPEC_FACTS_STRICT is set to `yes`, RspecPuppetlabsFacts will error on missing FacterDB entries, instead of warning & skipping the tests, or using an older facter version.
   # @return [Boolean]
   # @api private
   def self.spec_facts_strict?
@@ -435,6 +435,6 @@ RSpec.configure do |c|
   else
     puppet_version = Puppet.version
   end
-  c.add_setting :default_facter_version, default: RspecPuppetFacts.facter_version_for_puppet_version(puppet_version)
+  c.add_setting :default_facter_version, default: RspecPuppetlabsFacts.facter_version_for_puppet_version(puppet_version)
   c.add_setting :facterdb_string_keys, default: false
 end

@@ -41,7 +41,7 @@ else
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
     config.exclude_labels = %w[duplicate question invalid wontfix wont-fix skip-changelog github_actions]
     config.user = 'voxpupuli'
-    config.project = 'rspec-puppet-facts'
+    config.project = 'rspec-puppetlabs-facts'
     gem_version = Gem::Specification.load("#{config.project}.gemspec").version
     config.future_release = gem_version
   end

@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'json'
 require 'stringio'
 
-describe RspecPuppetFacts do
+describe RspecPuppetlabsFacts do
   let(:metadata_file) do
     'spec/fixtures/metadata.json'
   end

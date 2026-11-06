@@ -13,4 +13,4 @@ Style/IfUnlessModifier:
 # To match the gem name
 Naming/FileName:
   Exclude:
-    - 'lib/rspec-puppet-facts.rb'
+    - 'lib/rspec-puppetlabs-facts.rb'

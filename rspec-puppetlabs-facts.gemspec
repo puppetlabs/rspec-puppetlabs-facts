@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 $LOAD_PATH.unshift File.expand_path('lib', __dir__)
-require 'rspec-puppet-facts/version'
+require 'rspec-puppetlabs-facts/version'
 
 Gem::Specification.new do |s|
-  s.name        = 'rspec-puppet-facts'
-  s.version     = RspecPuppetFacts::Version::STRING
+  s.name        = 'rspec-puppetlabs-facts'
+  s.version     = RspecPuppetlabsFacts::Version::STRING
   s.authors     = ['Vox Pupuli']
   s.email       = ['voxpupuli@groups.io']
   s.homepage    = 'http://github.com/voxpupuli/rspec-puppet-facts'
