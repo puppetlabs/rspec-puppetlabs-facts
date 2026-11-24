@@ -1,52 +1,68 @@
-rspec-puppet-facts
-==================
+rspec-puppetlabs-facts
+======================
 
-[![License](https://img.shields.io/github/license/voxpupuli/rspec-puppet-facts.svg)](https://github.com/voxpupuli/rspec-puppet-facts/blob/master/LICENSE)
-[![Test](https://github.com/voxpupuli/rspec-puppet-facts/actions/workflows/test.yml/badge.svg)](https://github.com/voxpupuli/rspec-puppet-facts/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/voxpupuli/rspec-puppet-facts/branch/master/graph/badge.svg)](https://codecov.io/gh/voxpupuli/rspec-puppet-facts)
-[![Release](https://github.com/voxpupuli/rspec-puppet-facts/actions/workflows/release.yml/badge.svg)](https://github.com/voxpupuli/rspec-puppet-facts/actions/workflows/release.yml)
-[![RubyGem Version](https://img.shields.io/gem/v/rspec-puppet-facts.svg)](https://rubygems.org/gems/rspec-puppet-facts)
-[![RubyGem Downloads](https://img.shields.io/gem/dt/rspec-puppet-facts.svg)](https://rubygems.org/gems/rspec-puppet-facts)
-[![Donated by Camptocamp](https://img.shields.io/badge/donated%20by-camptocamp-fb7047.svg)](#transfer-notice)
+[![License](https://img.shields.io/github/license/puppetlabs/rspec-puppetlabs-facts.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/blob/master/LICENSE)
+[![Test](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/test.yml/badge.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/test.yml)
+[![Release](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/release.yml/badge.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/release.yml)
+[![RubyGem Version](https://img.shields.io/gem/v/rspec-puppetlabs-facts.svg)](https://rubygems.org/gems/rspec-puppetlabs-facts)
+[![RubyGem Downloads](https://img.shields.io/gem/dt/rspec-puppetlabs-facts.svg)](https://rubygems.org/gems/rspec-puppetlabs-facts)
 
 Based on an original idea from [apenney](https://github.com/apenney/puppet_facts/),
 this gem provides a method of running your [rspec-puppet](https://github.com/puppetlabs/rspec-puppet)
 tests against the facts for all your supported operating systems (provided by
-[facterdb](https://github.com/voxpupuli/facterdb)).
+[puppetlabs-facterdb](https://github.com/puppetlabs/puppetlabs-facterdb), built from Puppet Labs facter releases).
 This simplifies unit testing because you don't need to specify the facts yourself.
 
 ## Installation
 
-If you're using Bundler to manage gems in your module repository, install `rspec-puppet-facts` by adding it to the Gemfile.
+If you're using Bundler to manage gems in your module repository, install `rspec-puppetlabs-facts` by adding it to the Gemfile.
 
 1. Add the following line to your `Gemfile`:
 
 ```ruby
-gem 'rspec-puppet-facts', require: false
+gem 'rspec-puppetlabs-facts', require: false
 ```
 
 2. Run `bundle install`.
 
-If you're not using Bundler, install the `rspec-puppet-facts` manually.
+If you're not using Bundler, install the `rspec-puppetlabs-facts` manually.
 
 1. On the command line, run:
 
 ```bash
-$ gem install rspec-puppet-facts
+$ gem install rspec-puppetlabs-facts
 ```
 
 After the gem is installed (using either method), make the gem available to rspec by adding the following lines in your `spec/spec_helper.rb` file. Place the lines after `require 'rspec-puppet'` and before the `RSpec.configure` block, if one exists.
 
 ```ruby
-require 'rspec-puppet-facts'
-include RspecPuppetFacts
+require 'rspec-puppetlabs-facts'
+include RspecPuppetlabsFacts
 ```
+
+## Differences from rspec-puppet-facts
+
+This gem is a fork of upstream [rspec-puppet-facts](https://github.com/voxpupuli/rspec-puppet-facts) 6.3.1 for use with Puppet Labs facter.
+
+| | rspec-puppet-facts | rspec-puppetlabs-facts |
+|---|---|---|
+| Gemfile gem name | `rspec-puppet-facts` | `rspec-puppetlabs-facts` |
+| `require` path | `rspec-puppet-facts` | `rspec-puppetlabs-facts` |
+| `include` module | `RspecPuppetFacts` | `RspecPuppetlabsFacts` |
+| Facts dependencies | `openfact`, `facterdb` | `facter` (>= 4, < 5), `puppetlabs-facterdb` |
+| Environment variables | `FACTERDB_*` | `PUPPETLABS_FACTERDB_*` (`FACTERDB_*` has no effect) |
+
+`on_supported_os`, `add_custom_fact`, `SPEC_FACTS_OS` and `SPEC_FACTS_STRICT` are unchanged.
+
+Facter 4.23.0 is the data ceiling: it is the newest facter version with a fact data set in puppetlabs-facterdb 0.1.x.
+
+Both gems can be installed side by side, but require only one of them per project and never both from the same file, because `facter` and `openfact` both define `::Facter`.
 
 ## Specifying the supported operating systems
 
-To determine which facts to run your tests against, `rspec-puppet-facts` checks your module's `metadata.json` to find out what operating systems your module supports. The `metadata.json` file is located in the root of your module. To learn more about this file, see Puppet's [metadata](https://help.puppet.com/core/current/Content/PuppetCore/modules_metadata.htm) documentation.
+To determine which facts to run your tests against, `rspec-puppetlabs-facts` checks your module's `metadata.json` to find out what operating systems your module supports. The `metadata.json` file is located in the root of your module. To learn more about this file, see Puppet's [metadata](https://help.puppet.com/core/current/Content/PuppetCore/modules_metadata.htm) documentation.
 
-By default, `rspec-puppet-facts` provides the facts only for `x86_64` architecture. However, you can override this default and the supported operating system list by passing a hash to `on_supported_os` in your tests. This hash must contain either or both of the following keys:
+By default, `rspec-puppetlabs-facts` provides the facts only for `x86_64` architecture. However, you can override this default and the supported operating system list by passing a hash to `on_supported_os` in your tests. This hash must contain either or both of the following keys:
 
   * `:hardwaremodels` - An array of hardware architecture names, as strings.
   * `:supported_os`   - An array of hashes representing the operating systems.
@@ -434,8 +450,8 @@ Pass the fact name and value to the `add_custom_fact` function:
 
 ```ruby
 require 'rspec-puppet'
-require 'rspec-puppet-facts'
-include RspecPuppetFacts
+require 'rspec-puppetlabs-facts'
+include RspecPuppetlabsFacts
 
 # Add the 'concat_basedir' fact to all tests
 add_custom_fact :concat_basedir, '/doesnotexist'
@@ -493,7 +509,7 @@ Will result in a hash of the identity fact like the below:
 ```
 
 ### Supplying Custom External Facts through FacterDB
-Rspec-puppet-facts uses a gem called puppetlabs-facterdb that contains many fact sets of various combinations that are pre generated.  Rspec-puppet-facts queries
+rspec-puppetlabs-facts uses a gem called puppetlabs-facterdb that contains many fact sets of various combinations that are pre generated.  rspec-puppetlabs-facts queries
 puppetlabs-facterdb to pull out a specific fact set to use when testing. The upstream `FACTERDB_*` environment variables have no effect; use the `PUPPETLABS_FACTERDB_*` variables below.
 
 The default facts are great for many things but there will be times when you need to have custom
@@ -578,22 +594,32 @@ They are stored at `ext/puppet_agent_facter_versions.json`.
 It is maintained by hand from the [Puppet Core platform lifecycle page](https://help.puppet.com/core/current/Content/PuppetCore/platform_lifecycle.htm); the `puppet_versions:update` and `puppet_versions:test` rake tasks are disabled.
 The spec suite checks that every mapped facter version is valid, below 5 and has puppetlabs-facterdb data.
 
+### Syncing with upstream
+
+1. Add an `upstream` remote if it is absent (`git remote add upstream https://github.com/voxpupuli/rspec-puppet-facts.git`) and fetch the new upstream tag.
+2. Primary path (replay): start from the new upstream tag's tree and run `scripts/rename-to-puppetlabs.sh`. It renames files and rewrites names in `lib`, `spec`, `Rakefile`, the gemspec and the rubocop files, then fails if leftovers remain. It never stages, commits or pushes. Then re-apply the changes the script does not make: the gemspec identity and the `facter` / `puppetlabs-facterdb` dependencies, the Gemfile puppet/facter sources, `ext/puppet_agent_facter_versions.json` and the README edits.
+3. Expected conflict: `ext/puppet_agent_facter_versions.json`. Upstream maps OpenVox/OpenFact releases while this gem maps Puppet Labs releases only. Keep this gem's map, add only new Puppet Labs puppet/facter pairs and never add openvox keys.
+4. Merge case (untested guidance; replay is the recommended path): the script assumes a clean upstream tree. After merging an upstream tag into the renamed branch, old-named files (for example `lib/rspec-puppet-facts.rb`) reappear beside the renamed ones and the script's `move` exits 1 with `move: both ... exist (merge case, see DOC-04)`. The script only guarantees that error. To handle it manually, carry upstream's changes from each reappeared old-named file into its renamed counterpart, remove the old-named file, then rerun the script for the name substitutions.
+5. Verify with `bundle exec rake`.
+
 ## License
 
 This project is licensed under the [Apache-2 license](./LICENSE).
 
-## Transfer Notice
+## Provenance
 
-This plugin was originally authored by [Camptocamp](http://www.camptocamp.com).
-The maintainer preferred that Puppet Community take ownership of the module for future improvement and maintenance.
-Existing pull requests and issues were transferred over, please fork and continue to contribute here instead of Camptocamp.
+This plugin was originally authored by [Camptocamp](http://www.camptocamp.com), based on an original idea from [apenney](https://github.com/apenney/puppet_facts/).
+It was later maintained by Vox Pupuli at https://github.com/voxpupuli/rspec-puppet-facts.
+Puppet Labs forked it from upstream 6.3.1 as rspec-puppetlabs-facts.
 
 Previously: https://github.com/mcanevet/rspec-puppet-facts
 
 ## Release information
 
+These steps are interim and will be replaced when the release workflow moves to the puppetlabs repo.
+
 To make a new release, please do:
-* Update the version in the `lib/rspec-puppet-facts/version.rb` file
+* Update the version in the `lib/rspec-puppetlabs-facts/version.rb` file
 * Install gems with `bundle install --with release --path .vendor`
 * generate the changelog with `bundle exec rake changelog`
 * Create a PR with it

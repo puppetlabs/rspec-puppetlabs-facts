@@ -6,11 +6,11 @@ require 'rspec-puppetlabs-facts/version'
 Gem::Specification.new do |s|
   s.name        = 'rspec-puppetlabs-facts'
   s.version     = RspecPuppetlabsFacts::Version::STRING
-  s.authors     = ['Vox Pupuli']
-  s.email       = ['voxpupuli@groups.io']
-  s.homepage    = 'http://github.com/voxpupuli/rspec-puppet-facts'
-  s.summary     = 'Standard facts fixtures for Puppet'
-  s.description = 'Contains facts from many Facter version on many Operating Systems'
+  s.authors     = ['Puppet Labs', 'Vox Pupuli']
+  s.homepage    = 'https://github.com/puppetlabs/rspec-puppetlabs-facts'
+  s.summary     = 'Standard facts fixtures for Puppet, using Puppet Labs facter'
+  s.description = 'Contains facts from many Facter 4.x versions on many operating systems for rspec-puppet tests, ' \
+                  'sourced from puppetlabs-facterdb. Forked from the Vox Pupuli gem at version 6.3.1.'
   s.licenses    = 'Apache-2.0'
 
   s.required_ruby_version = '>= 3.2.0'
