@@ -1,6 +1,19 @@
 # frozen_string_literal: true
 
+require 'bundler/gem_tasks'
+
 PUPPET_VERSIONS_PATH = File.join(__dir__, 'ext', 'puppet_agent_facter_versions.json')
+
+LEFTOVER_PATTERN = /RspecPuppetFacts|rspec-puppet-facts|voxpupuli|openfact/i
+LEFTOVER_ALLOWED_TOKENS = %r{voxpupuli-rubocop|voxpupuli/rubocop}i
+LEFTOVER_ALLOWED_FILES = %w[
+  README.md
+  HISTORY.md
+  CHANGELOG.md
+  LICENSE
+  scripts/rename-to-puppetlabs.sh
+  Rakefile
+].freeze
 
 begin
   require 'rspec/core/rake_task'
@@ -32,31 +45,26 @@ namespace :puppet_versions do
   end
 end
 
-begin
-  require 'github_changelog_generator/task'
-rescue LoadError
-  # github_changelog_generator is an optional group
-else
-  require 'rubygems'
-  GitHubChangelogGenerator::RakeTask.new :changelog do |config|
-    config.exclude_labels = %w[duplicate question invalid wontfix wont-fix skip-changelog github_actions]
-    config.user = 'voxpupuli'
-    config.project = 'rspec-puppetlabs-facts'
-    gem_version = Gem::Specification.load("#{config.project}.gemspec").version
-    config.future_release = gem_version
-  end
+def tracked_files
+  files = `git ls-files -z`.split("\0")
+  abort 'check_leftovers: git ls-files returned no files' unless Process.last_status.success? && !files.empty?
+  files
+end
 
-  # Workaround for https://github.com/github-changelog-generator/github-changelog-generator/issues/715
-  require 'rbconfig'
-  if RbConfig::CONFIG['host_os'].include?('linux')
-    task :changelog do
-      puts 'Fixing line endings...'
-      changelog_file = File.join(__dir__, 'CHANGELOG.md')
-      changelog_txt = File.read(changelog_file)
-      new_contents = changelog_txt.gsub("\r\n", "\n")
-      File.open(changelog_file, 'w') { |file| file.puts new_contents }
-    end
+def leftover_hits(path)
+  File.foreach(path).with_index(1).filter_map do |line, number|
+    text = line.scrub.gsub(LEFTOVER_ALLOWED_TOKENS, '')
+    "#{path}:#{number}: #{line.scrub.strip}" if text.match?(LEFTOVER_PATTERN)
   end
+end
+
+desc 'Fail on leftover upstream names outside the allowlist'
+task :check_leftovers do
+  files = tracked_files.reject { |path| LEFTOVER_ALLOWED_FILES.include?(path) }
+  hits = files.select { |path| File.file?(path) }.flat_map { |path| leftover_hits(path) }
+  abort "Leftover upstream names found (allowlist in Rakefile):\n#{hits.join("\n")}" unless hits.empty?
+
+  puts 'check_leftovers: OK'
 end
 
 begin
@@ -65,5 +73,5 @@ rescue LoadError
   # the voxpupuli-rubocop gem is optional
 end
 
-desc 'Run rspec and rubocop'
-task default: %i[spec rubocop]
+desc 'Run rspec, rubocop and the leftover-name check'
+task default: %i[spec rubocop check_leftovers]

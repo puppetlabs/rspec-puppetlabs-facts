@@ -1,8 +1,8 @@
 rspec-puppetlabs-facts
 ======================
 
-[![License](https://img.shields.io/github/license/puppetlabs/rspec-puppetlabs-facts.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/blob/master/LICENSE)
-[![Test](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/test.yml/badge.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/test.yml)
+[![License](https://img.shields.io/github/license/puppetlabs/rspec-puppetlabs-facts.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/blob/main/LICENSE)
+[![CI](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/ci.yml/badge.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/ci.yml)
 [![Release](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/release.yml/badge.svg)](https://github.com/puppetlabs/rspec-puppetlabs-facts/actions/workflows/release.yml)
 [![RubyGem Version](https://img.shields.io/gem/v/rspec-puppetlabs-facts.svg)](https://rubygems.org/gems/rspec-puppetlabs-facts)
 [![RubyGem Downloads](https://img.shields.io/gem/dt/rspec-puppetlabs-facts.svg)](https://rubygems.org/gems/rspec-puppetlabs-facts)
@@ -616,11 +616,10 @@ Previously: https://github.com/mcanevet/rspec-puppet-facts
 
 ## Release information
 
-These steps are interim and will be replaced when the release workflow moves to the puppetlabs repo.
-
 To make a new release, please do:
-* Update the version in the `lib/rspec-puppetlabs-facts/version.rb` file
-* Install gems with `bundle install --with release --path .vendor`
-* generate the changelog with `bundle exec rake changelog`
-* Create a PR with it
-* After it got merged, push a tag. A github workflow will do the actual release
+
+1. Run the `Release Prep` workflow (`release_prep.yml`) from the Actions tab with the new version. It updates `lib/rspec-puppetlabs-facts/version.rb`, regenerates `CHANGELOG.md` with gh-changelog (configured in `.changelog.yml`) and opens a release-prep PR against `main`.
+2. Review and merge that PR.
+3. Run the `release` workflow (`release.yml`). It builds the gem with `rake build`, creates the GitHub release `v<version>` and publishes to RubyGems.org and GitHub Packages.
+
+Only maintainers with write access can run these workflows. Publishing uses the repository's `GEM_HOST_API_KEY` secret.

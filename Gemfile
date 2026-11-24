@@ -50,11 +50,6 @@ end
 
 gemspec
 
-group :release, optional: true do
-  gem 'faraday-retry', '~> 2.1', require: false
-  gem 'github_changelog_generator', '~> 1.18.0', require: false
-end
-
 gem 'base64' if RUBY_VERSION >= '3.4'
 gem 'facter', *location_for(ENV.fetch('FACTER_GEM_VERSION', '>= 4'), nil, { source: gemsource_puppetcore })
 gem 'puppet', *location_for(ENV.fetch('PUPPET_GEM_VERSION', puppet_floor_version(gemsource_puppetcore)), nil, { source: gemsource_puppetcore })
