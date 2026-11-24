@@ -98,18 +98,41 @@ describe RspecPuppetlabsFacts do
     end
 
     context 'when passed a known Puppet version' do
-      let(:puppet_version) { '5.2.0' }
+      let(:puppet_version) { '7.5.0' }
 
       it 'returns the Facter version for that Puppet version' do
-        expect(facter_version).to eq('3.9.0')
+        expect(facter_version).to eq('4.0.52')
       end
     end
 
     context 'when passed a Puppet version between two known versions' do
-      let(:puppet_version) { '5.2.5' }
+      let(:puppet_version) { '7.5.5' }
 
       it 'returns the Facter version for the lower Puppet version' do
-        expect(facter_version).to eq('3.9.0')
+        expect(facter_version).to eq('4.0.52')
+      end
+    end
+
+    context 'with the ext/puppet_agent_facter_versions.json entries' do
+      versions_file = File.expand_path(File.join(__dir__, '..', 'ext', 'puppet_agent_facter_versions.json'))
+      versions = JSON.parse(File.read(versions_file))
+
+      versions.each do |puppet_version, facter_version|
+        it "maps Puppet #{puppet_version} to a valid Facter #{facter_version} below 5" do
+          expect(Gem::Version).to be_correct(puppet_version)
+          expect(Gem::Version).to be_correct(facter_version)
+          expect(Gem::Version.new(facter_version)).to be < Gem::Version.new('5')
+        end
+      end
+
+      valid_values = versions.values.select { |value| Gem::Version.correct?(value) }
+      minors = valid_values.map { |value| Gem::Version.new(value).segments.first(2) }.uniq
+
+      minors.each do |major, minor|
+        it "has puppetlabs-facterdb fact sets for Facter #{major}.#{minor}" do
+          facts = Puppetlabs::FacterDB.get_facts({ facterversion: "/\\A#{major}\\.#{minor}\\./" })
+          expect(facts).not_to be_empty
+        end
       end
     end
 
@@ -447,7 +470,7 @@ describe RspecPuppetlabsFacts do
                 ],
               },
             ],
-            facterversion: '3.9',
+            facterversion: '4.23',
           },
         )
       end

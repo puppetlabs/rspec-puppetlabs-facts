@@ -79,12 +79,12 @@ end
 ## Specifying a default Facter version
 
 By default, `on_supported_os` will return the facts for the version of Facter that it has loaded. It will check for the loaded Puppet version and maps that to the Facter version that Perforce released in the matching AIO.
-The mapping is stored in `ext/puppet_agent_components.json` (check the [maintenance](#maintenance) section for details) and computated in the `facter_version_for_puppet_version` method.
+The mapping is stored in `ext/puppet_agent_facter_versions.json` (check the [maintenance](#maintenance) section for details) and computated in the `facter_version_for_puppet_version` method.
 This behaviour can be overridden by setting the `default_facter_version` RSpec setting in your `spec/spec_helper.rb` file.
 
 ```ruby
 RSpec.configure do |c|
-  c.default_facter_version = '3.14.0'
+  c.default_facter_version = '4.23.0'
 end
 ```
 
@@ -574,13 +574,9 @@ When no facts are available for the specific facter/operating system combination
 This gem uses information about puppet AIO component versions to build/test.
 They are stored at `ext/puppet_agent_facter_versions.json`.
 
-In the past we used `bundle exec rake puppet_versions:update` to update the file and `puppet_versions:test` to validate it.
-This relied on information from the puppet forge.
-With the 6.0.0 release we're switching to openvox.
-The file is currently maintained by hand, because openvox doesn't offer an API yet to map agent releases to openfact releases.
-It got also renamed from `ext/puppet_agent_facter_versions.json` -> `ext/openvox_agent_facter_versions.json`.
-
-**`ext/openvox_agent_facter_versions.json`now lists a mapping of openvox releases to openfact releases**
+`ext/puppet_agent_facter_versions.json` lists the Puppet Labs puppet-agent releases and the facter version each ships.
+It is maintained by hand from the [Puppet Core platform lifecycle page](https://help.puppet.com/core/current/Content/PuppetCore/platform_lifecycle.htm); the `puppet_versions:update` and `puppet_versions:test` rake tasks are disabled.
+The spec suite checks that every mapped facter version is valid, below 5 and has puppetlabs-facterdb data.
 
 ## License
 
