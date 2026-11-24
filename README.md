@@ -493,13 +493,13 @@ Will result in a hash of the identity fact like the below:
 ```
 
 ### Supplying Custom External Facts through FacterDB
-Rspec-puppet-facts uses a gem called facterdb that contains many fact sets of various combinations that are pre generated.  Rspec-puppet-facts queries
-facterdb to pull out a specific fact set to use when testing.
+Rspec-puppet-facts uses a gem called puppetlabs-facterdb that contains many fact sets of various combinations that are pre generated.  Rspec-puppet-facts queries
+puppetlabs-facterdb to pull out a specific fact set to use when testing. The upstream `FACTERDB_*` environment variables have no effect; use the `PUPPETLABS_FACTERDB_*` variables below.
 
 The default facts are great for many things but there will be times when you need to have custom
 fact sets that only make sense in your environment or might contain sensitive information.
 
-To supply external facts to facterdb just set the `FACTERDB_SEARCH_PATHS` environment variable with one or more
+To supply external facts to puppetlabs-facterdb just set the `PUPPETLABS_FACTERDB_SEARCH_EXTERNAL_DIR` environment variable with one or more
 paths to your facts.
 
 When separating paths please use the default path separator character supported by your OS.
@@ -520,11 +520,11 @@ multiple directories.
 
 Example:
 
-`FACTERDB_SEARCH_PATHS="/var/opt/lib/custom_facts"`
+`PUPPETLABS_FACTERDB_SEARCH_EXTERNAL_DIR="/var/opt/lib/custom_facts"`
 
 or
 
-`FACTERDB_SEARCH_PATHS="/var/opt/lib/custom_facts:/tmp/custom_facts:/home/user1/custom_facts"`
+`PUPPETLABS_FACTERDB_SEARCH_EXTERNAL_DIR="/var/opt/lib/custom_facts:/tmp/custom_facts:/home/user1/custom_facts"`
 
 
 You can create these files via many methods.
@@ -534,18 +534,18 @@ You can create these files via many methods.
 * hand crafted
 
 
-Additionally you can skip the default FacterDB facts completely by setting the environment variable `FACTERDB_SKIP_DEFAULTDB`.
-This will instruct facterdb to not look at its built-in facts which can be useful should you need to completely replace which facts are used.
+Additionally you can skip the default FacterDB facts completely by setting the environment variable `PUPPETLABS_FACTERDB_SKIP_DEFAULTDB`.
+This will instruct puppetlabs-facterdb to not look at its built-in facts which can be useful should you need to completely replace which facts are used.
 
 
-Setting the variable `FACTERDB_SKIP_DEFAULTDB` to anything will disable the internal facts used by facterdb.  You would most likely use this in combination
-with the `FACTERDB_SEARCH_PATHS` environment variable.
+Setting the variable `PUPPETLABS_FACTERDB_SKIP_DEFAULTDB` to anything will disable the internal facts used by puppetlabs-facterdb.  You would most likely use this in combination
+with the `PUPPETLABS_FACTERDB_SEARCH_EXTERNAL_DIR` environment variable.
 
 Example:
 
 ```
-FACTERDB_SEARCH_PATHS="/var/opt/lib/custom_facts:/tmp/custom_facts:/home/user1/custom_facts"
-FACTERDB_SKIP_DEFAULTDB='yes'
+PUPPETLABS_FACTERDB_SEARCH_EXTERNAL_DIR="/var/opt/lib/custom_facts:/tmp/custom_facts:/home/user1/custom_facts"
+PUPPETLABS_FACTERDB_SKIP_DEFAULTDB='yes'
 ```
 
 We recommend placing custom external facts under spec/fixtures/facts directory.
@@ -555,7 +555,7 @@ Additionally, if you plan on using these custom facts everytime you should set t
 ```ruby
 module_spec_dir = File.dirname(__FILE__)
 custom_facts = File.join(module_spec_dir, 'fixtures', 'facts')
-ENV['FACTERDB_SEARCH_PATHS'] = custom_facts
+ENV['PUPPETLABS_FACTERDB_SEARCH_EXTERNAL_DIR'] = custom_facts
 ```
 ## Running your tests
 

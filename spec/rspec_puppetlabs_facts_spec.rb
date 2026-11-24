@@ -614,7 +614,7 @@ describe RspecPuppetlabsFacts do
           'os.hardware' => 'x86_64',
         }
 
-        expect(FacterDB).to receive(:get_facts).with(filter, symbolize_keys: true).once
+        expect(Puppetlabs::FacterDB).to receive(:get_facts).with(filter, symbolize_keys: true).once
         subject
       end
 
@@ -740,8 +740,8 @@ describe RspecPuppetlabsFacts do
       end
 
       before do
-        allow(FacterDB).to receive(:get_facts).and_call_original
-        allow(FacterDB).to receive(:get_facts).with(
+        allow(Puppetlabs::FacterDB).to receive(:get_facts).and_call_original
+        allow(Puppetlabs::FacterDB).to receive(:get_facts).with(
           { 'os.name' => 'CentOS', 'os.release.full' => '/^9/', 'os.hardware' => 'x86_64' }, symbolize_keys: true
         ).and_wrap_original do |m, *args|
           m.call(*args).reject { |facts| facts[:facterversion].start_with?('4.6.') }

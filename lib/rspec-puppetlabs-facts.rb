@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'facter'
-require 'facterdb'
+require 'puppetlabs/facterdb'
 require 'json'
 require 'deep_merge'
 
@@ -119,7 +119,7 @@ module RspecPuppetlabsFacts
     # cycle through and downgrade Facter versions per platform type until we find matching Facter data.
     facterversion_key = RSpec.configuration.facterdb_string_keys ? 'facterversion' : :facterversion
     filter.each do |filter_spec|
-      versions = FacterDB.get_facts(filter_spec, symbolize_keys: !RSpec.configuration.facterdb_string_keys).to_h do |facts|
+      versions = Puppetlabs::FacterDB.get_facts(filter_spec, symbolize_keys: !RSpec.configuration.facterdb_string_keys).to_h do |facts|
         [Gem::Version.new(facts[facterversion_key]), facts]
       end
 
