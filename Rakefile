@@ -64,3 +64,6 @@ begin
 rescue LoadError
   # the voxpupuli-rubocop gem is optional
 end
+
+desc 'Run rspec and rubocop'
+task default: %i[spec rubocop]
