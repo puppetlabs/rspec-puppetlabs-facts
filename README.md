@@ -42,7 +42,7 @@ include RspecPuppetlabsFacts
 
 ## Differences from rspec-puppet-facts
 
-This gem is a fork of upstream [rspec-puppet-facts](https://github.com/voxpupuli/rspec-puppet-facts) 6.3.1 for use with Puppet Labs facter.
+This gem is a fork of upstream [rspec-puppet-facts](https://github.com/voxpupuli/rspec-puppet-facts) 6.3.1 for use with Puppet Labs facter. From 7.0.0 it uses `facter` and `puppetlabs-facterdb` in place of `openfact` and `facterdb`, and renames the gem, `require` path and module (a breaking change, see below).
 
 | | rspec-puppet-facts | rspec-puppetlabs-facts |
 |---|---|---|
