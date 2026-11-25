@@ -4,6 +4,6 @@ module RspecPuppetlabsFacts
   # This module contains the current version constant
   module Version
     # The current version of this gem
-    STRING = '6.3.1'
+    STRING = '7.0.0'
   end
 end
