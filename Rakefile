@@ -22,7 +22,7 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 namespace :acceptance do
-  desc 'Run acceptance tests against the built gem'
+  desc 'Run acceptance tests against current code'
   RSpec::Core::RakeTask.new(:local) do |t|
     t.pattern = 'spec/acceptance/**/*_spec.rb'
   end

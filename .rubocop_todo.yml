@@ -23,10 +23,10 @@ RSpec/ExpectInHook:
   Exclude:
     - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
 
-# The acceptance pipeline runs once in before(:all) and shares results.
-RSpec/InstanceVariable:
+# Acceptance specs describe commands, not a class, as in pdk-private.
+RSpec/DescribeClass:
   Exclude:
-    - 'spec/acceptance/install_spec.rb'
+    - 'spec/acceptance/**/*_spec.rb'
 
 # Offense count: 4
 RSpec/LeakyConstantDeclaration:
@@ -44,16 +44,13 @@ RSpec/MessageSpies:
 # SupportedStyles: always, named_only
 RSpec/NamedSubject:
   Exclude:
+    - 'spec/acceptance/**/*_spec.rb'
     - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
 
 # Offense count: 13
 # Configuration parameters: AllowedGroups.
 RSpec/NestedGroups:
   Max: 6
-
-RSpec/SpecFilePathFormat:
-  Exclude:
-    - 'spec/acceptance/install_spec.rb'
 
 # Offense count: 1
 RSpec/StubbedMock:
