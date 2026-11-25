@@ -21,7 +21,7 @@ describe RspecPuppetlabsFacts do
     end
 
     let(:component_json_path) do
-      File.expand_path(File.join(__dir__, '..', 'ext', 'puppet_agent_facter_versions.json'))
+      File.expand_path(File.join(__dir__, '..', '..', 'ext', 'puppet_agent_facter_versions.json'))
     end
 
     let(:puppet_version) { Puppet.version }
@@ -114,7 +114,7 @@ describe RspecPuppetlabsFacts do
     end
 
     context 'with the ext/puppet_agent_facter_versions.json entries' do
-      versions_file = File.expand_path(File.join(__dir__, '..', 'ext', 'puppet_agent_facter_versions.json'))
+      versions_file = File.expand_path(File.join(__dir__, '..', '..', 'ext', 'puppet_agent_facter_versions.json'))
       versions = JSON.parse(File.read(versions_file))
 
       versions.each do |puppet_version, facter_version|

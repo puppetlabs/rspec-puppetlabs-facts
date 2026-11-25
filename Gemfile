@@ -54,3 +54,7 @@ gem 'base64' if RUBY_VERSION >= '3.4'
 gem 'facter', *location_for(ENV.fetch('FACTER_GEM_VERSION', '>= 4'), nil, { source: gemsource_puppetcore })
 gem 'puppet', *location_for(ENV.fetch('PUPPET_GEM_VERSION', puppet_floor_version(gemsource_puppetcore)), nil, { source: gemsource_puppetcore })
 gem 'syslog', '~> 0.3' if RUBY_VERSION >= '3.4'
+
+group :acceptance do
+  gem 'serverspec'
+end

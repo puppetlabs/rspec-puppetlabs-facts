@@ -11,7 +11,7 @@
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Exclude:
-    - 'spec/rspec_puppetlabs_facts_spec.rb'
+    - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
 
 # Offense count: 6
 # Configuration parameters: CountAsOne.
@@ -21,12 +21,17 @@ RSpec/ExampleLength:
 # Offense count: 1
 RSpec/ExpectInHook:
   Exclude:
-    - 'spec/rspec_puppetlabs_facts_spec.rb'
+    - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
+
+# Acceptance specs describe commands, not a class, as in pdk-private.
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/acceptance/**/*_spec.rb'
 
 # Offense count: 4
 RSpec/LeakyConstantDeclaration:
   Exclude:
-    - 'spec/rspec_puppetlabs_facts_spec.rb'
+    - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
 
 # Offense count: 7
 # Configuration parameters: .
@@ -39,7 +44,8 @@ RSpec/MessageSpies:
 # SupportedStyles: always, named_only
 RSpec/NamedSubject:
   Exclude:
-    - 'spec/rspec_puppetlabs_facts_spec.rb'
+    - 'spec/acceptance/**/*_spec.rb'
+    - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
 
 # Offense count: 13
 # Configuration parameters: AllowedGroups.
@@ -49,7 +55,7 @@ RSpec/NestedGroups:
 # Offense count: 1
 RSpec/StubbedMock:
   Exclude:
-    - 'spec/rspec_puppetlabs_facts_spec.rb'
+    - 'spec/unit/rspec_puppetlabs_facts_spec.rb'
 
 # Offense count: 1
 Style/MixinUsage:

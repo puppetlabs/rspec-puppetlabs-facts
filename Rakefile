@@ -15,10 +15,21 @@ LEFTOVER_ALLOWED_FILES = %w[
   Rakefile
 ].freeze
 
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.exclude_pattern = 'spec/spec_helper_acceptance.rb,spec/acceptance/**'
+end
+
+namespace :acceptance do
+  desc 'Run acceptance tests against current code'
+  RSpec::Core::RakeTask.new(:local) do |t|
+    t.pattern = 'spec/acceptance/**/*_spec.rb'
+  end
+end
+
 begin
-  require 'rspec/core/rake_task'
   require 'yard'
-  RSpec::Core::RakeTask.new(:spec)
   YARD::Rake::YardocTask.new
 rescue LoadError
   # yard is optional
